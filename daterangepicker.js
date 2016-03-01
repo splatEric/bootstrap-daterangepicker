@@ -478,19 +478,21 @@
                 this.startDate = moment(startDate, this.locale.format);
 
             if (typeof startDate === 'object')
-                this.startDate = moment(startDate);
+                this.startDate = startDate == null ? startDate : moment(startDate);
 
-            if (!this.timePicker)
-                this.startDate = this.startDate.startOf('day');
+            if (this.startDate != null) {
+                if (!this.timePicker)
+                    this.startDate = this.startDate.startOf('day');
 
-            if (this.timePicker && this.timePickerIncrement)
-                this.startDate.minute(Math.round(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
+                if (this.timePicker && this.timePickerIncrement)
+                    this.startDate.minute(Math.round(this.startDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
 
-            if (this.minDate && this.startDate.isBefore(this.minDate))
-                this.startDate = this.minDate;
+                if (this.minDate && this.startDate.isBefore(this.minDate))
+                    this.startDate = this.minDate;
 
-            if (this.maxDate && this.startDate.isAfter(this.maxDate))
-                this.startDate = this.maxDate;
+                if (this.maxDate && this.startDate.isAfter(this.maxDate))
+                    this.startDate = this.maxDate;
+            }
 
             if (!this.isShowing)
                 this.updateElement();
@@ -503,24 +505,26 @@
                 this.endDate = moment(endDate, this.locale.format);
 
             if (typeof endDate === 'object')
-                this.endDate = moment(endDate);
+                this.endDate = endDate == null ? endDate : moment(endDate);
 
-            if (!this.timePicker)
-                this.endDate = this.endDate.endOf('day');
+            if (this.endDate != null) {
+                if (!this.timePicker)
+                    this.endDate = this.endDate.endOf('day');
 
-            if (this.timePicker && this.timePickerIncrement)
-                this.endDate.minute(Math.round(this.endDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
+                if (this.timePicker && this.timePickerIncrement)
+                    this.endDate.minute(Math.round(this.endDate.minute() / this.timePickerIncrement) * this.timePickerIncrement);
 
-            if (this.endDate.isBefore(this.startDate))
-                this.endDate = this.startDate.clone();
+                if (this.endDate.isBefore(this.startDate))
+                    this.endDate = this.startDate.clone();
 
-            if (this.maxDate && this.endDate.isAfter(this.maxDate))
-                this.endDate = this.maxDate;
+                if (this.maxDate && this.endDate.isAfter(this.maxDate))
+                    this.endDate = this.maxDate;
 
-            if (this.dateLimit && this.startDate.clone().add(this.dateLimit).isBefore(this.endDate))
-                this.endDate = this.startDate.clone().add(this.dateLimit);
+                if (this.dateLimit && this.startDate.clone().add(this.dateLimit).isBefore(this.endDate))
+                    this.endDate = this.startDate.clone().add(this.dateLimit);
 
-            this.previousRightTime = this.endDate.clone();
+                this.previousRightTime = this.endDate.clone();
+            }
 
             if (!this.isShowing)
                 this.updateElement();
@@ -1529,18 +1533,28 @@
             var start = moment(this.container.find('input[name="daterangepicker_start"]').val(), this.locale.format);
             var end = moment(this.container.find('input[name="daterangepicker_end"]').val(), this.locale.format);
 
-            if (start.isValid() && end.isValid()) {
+            if (!this.container.find('input[name="daterangepicker_start_enabled"]').is(':checked')) {
+                start = null;
+            }
+            if (!this.container.find('input[name="daterangepicker_end_enabled"]').is(':checked')) {
+                end = null;
+            }
+            if ( (start == null || start.isValid())
+                && (end == null || end.isValid()) ) {
 
-                if (isRight && end.isBefore(start))
+                if (isRight && end != null && start != null && end.isBefore(start))
                     start = end.clone();
 
                 this.setStartDate(start);
                 this.setEndDate(end);
 
                 if (isRight) {
-                    this.container.find('input[name="daterangepicker_start"]').val(this.startDate.format(this.locale.format));
+                    if (this.startDate)
+                        this.container.find('input[name="daterangepicker_start"]').val(this.startDate.format(this.locale.format));
                 } else {
-                    this.container.find('input[name="daterangepicker_end"]').val(this.endDate.format(this.locale.format));
+                    if (this.endDate)
+                        this.container.find('input[name="daterangepicker_end"]').val(this.endDate.format(this.locale.format));
+                        this.container.find('input[name="daterangepicker_end"]').val(this.endDate.format(this.locale.format));
                 }
 
             }
