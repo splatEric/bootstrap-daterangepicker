@@ -1612,10 +1612,10 @@
                     this.element.val(startDate + this.locale.separator + endDate);
                 }
                 else if (startDate) {
-                    this.element.val('>' + startDate);
+                    this.element.val('>=' + startDate);
                 }
                 else if (endDate) {
-                    this.element.val('<' + endDate);
+                    this.element.val('<=' + endDate);
                 }
                 else {
                     this.element.val('');
